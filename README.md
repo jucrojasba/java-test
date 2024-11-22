@@ -35,7 +35,7 @@ mvn exec:java
 
 Once the application is running, an interactive menu will appear in the console, allowing you to use the system.
 
-##Relational Model
+## Relational Model
 
 ![image](https://github.com/user-attachments/assets/53d9aded-f207-43a4-9257-596193104238)
 
