@@ -1,4 +1,4 @@
-package src.main.java.com.printer.persistence.DAO;
+package com.printer.persistence.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package com.printer.persistance.db;
+package com.printer.persistence.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package src.main.com.printer.models;
+package src.main.java.com.printer.models;
 
 public class Client {
     private int id;
