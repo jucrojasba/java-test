@@ -3,10 +3,12 @@ package com.printer.views;
 import com.printer.controllers.ClientController;
 import com.printer.controllers.MachineController;
 import com.printer.controllers.RentalController;
+import com.printer.importers.ExcelImporter;
 import com.printer.models.Client;
 import com.printer.models.Machine;
 import com.printer.models.Rental;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class MenuView {
             System.out.println("5. View Rentals (Paginated)");
             System.out.println("6. View Machines (Paginated)");
             System.out.println("7. Deactivate a Rental");
+            System.out.println("8. Import Machines from Excel");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
@@ -58,6 +61,9 @@ public class MenuView {
                     break;
                 case 7:
                     deactivateRental(rentalController, scanner);
+                    break;
+                case 8:
+                    importMachinesFromExcel(machineController, scanner);
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -238,4 +244,19 @@ public class MenuView {
         System.out.println("Machines - Page " + page);
         machines.forEach(machine -> System.out.println(machine.toString()));
     }
+
+    private static void importMachinesFromExcel(MachineController machineController, Scanner scanner) {
+    System.out.print("Enter the path of the Excel file: ");
+    String filePath = scanner.next();
+    ExcelImporter importer = new ExcelImporter(machineController);
+    
+    try {
+        importer.importMachinesFromExcel(filePath);
+        System.out.println("Machines imported successfully from Excel.");
+    } catch (IOException e) {
+        e.printStackTrace();
+        System.out.println("Error importing machines from Excel.");
+    }
+}
+
 }
