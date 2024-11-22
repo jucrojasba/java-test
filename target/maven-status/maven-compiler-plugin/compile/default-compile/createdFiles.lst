@@ -1,0 +1,12 @@
+com\printer\controllers\RentalController.class
+com\printer\persistence\db\DbContext.class
+com\printer\persistence\DAO\ClientDAO.class
+com\printer\views\MenuView.class
+com\printer\persistence\DAO\RentalDAO.class
+com\printer\controllers\ClientController.class
+com\printer\models\Client.class
+com\printer\models\Rental.class
+com\printer\controllers\MachineController.class
+com\printer\Main.class
+com\printer\models\Machine.class
+com\printer\persistence\DAO\MachineDAO.class

@@ -3,115 +3,207 @@ package com.printer.views;
 import com.printer.controllers.ClientController;
 import com.printer.controllers.MachineController;
 import com.printer.controllers.RentalController;
+import com.printer.models.Client;
+import com.printer.models.Machine;
+import com.printer.models.Rental;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuView {
-    private Scanner scanner;
-    private ClientController clientController;
-    private MachineController machineController;
-    private RentalController rentalController;
 
-    public MenuView() {
-        this.scanner = new Scanner(System.in);
-        this.clientController = new ClientController();
-        this.machineController = new MachineController();
-        this.rentalController = new RentalController();
-    }
-
-    public void displayMenu() {
-        System.out.println("----- MENU -----");
-        System.out.println("1. Add Client");
-        System.out.println("2. Add Machine");
-        System.out.println("3. Add Rental");
-        System.out.println("4. View Rentals");
-        System.out.println("5. Exit");
-    }
+    private static final int PAGE_SIZE = 5;
 
     public void showMenu() {
-        boolean running = true;
-        while (running) {
-            displayMenu();
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();  
+        ClientController clientController = new ClientController();
+        MachineController machineController = new MachineController();
+        RentalController rentalController = new RentalController();
+
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Register a Client");
+            System.out.println("2. Register a Machine");
+            System.out.println("3. Register a Rental");
+            System.out.println("4. View Clients (Paginated)");
+            System.out.println("5. View Rentals (Paginated)");
+            System.out.println("6. View Machines (Paginated)");
+            System.out.println("7. Deactivate a Rental");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                    addClient();
+                    registerClient(clientController, scanner);
                     break;
                 case 2:
-                    addMachine();
+                    registerMachine(machineController, scanner);
                     break;
                 case 3:
-                    addRental();
+                    registerRental(rentalController, scanner);
                     break;
                 case 4:
-                    viewRentals();
+                    handlePaginatedViewClients(clientController, scanner);
                     break;
                 case 5:
-                    running = false;
-                    System.out.println("Exiting... Goodbye!");
+                    handlePaginatedViewRentals(rentalController, scanner);
+                    break;
+                case 6:
+                    handlePaginatedViewMachines(machineController, scanner);
+                    break;
+                case 7:
+                    deactivateRental(rentalController, scanner);
+                    break;
+                case 0:
+                    System.out.println("Exiting...");
                     break;
                 default:
-                    System.out.println("Invalid choice, please try again.");
+                    System.out.println("Invalid choice. Please try again.");
             }
-        }
+        } while (choice != 0);
     }
 
-    // Add a new client
-    private void addClient() {
-        System.out.println("Enter client name: ");
-        String name = scanner.nextLine(); 
-        System.out.println("Enter client email: ");
-        String email = scanner.nextLine(); 
-        System.out.println("Enter client phone: ");
-        String phone = scanner.nextLine(); 
-        System.out.println("Enter client address: ");
-        String address = scanner.nextLine(); 
-        clientController.addClient(name, email, phone, address); 
-        System.out.println("Client added successfully!");
+    private static void registerClient(ClientController clientController, Scanner scanner) {
+        System.out.print("Enter client name: ");
+        String name = scanner.next();
+        System.out.print("Enter client email: ");
+        String email = scanner.next();
+        System.out.print("Enter client phone: ");
+        String phone = scanner.next();
+        System.out.print("Enter client address: ");
+        String address = scanner.next();
+
+        clientController.addClient(name, email, phone, address);
+        System.out.println("Client registered successfully.");
     }
 
+    private static void registerMachine(MachineController machineController, Scanner scanner) {
+        System.out.print("Enter machine model: ");
+        String model = scanner.next();
+        System.out.print("Enter machine serial number: ");
+        String serialNumber = scanner.next();
+        System.out.print("Enter machine status: ");
+        String status = scanner.next();
 
-    // Add a new machine
-    private void addMachine() {
-        System.out.println("Enter machine model: ");
-        String model = scanner.nextLine();
-        System.out.println("Enter machine serial number: ");
-        String serialNumber = scanner.nextLine();
-        System.out.println("Enter machine status: ");
-        String status = scanner.nextLine();
-    
         machineController.addMachine(model, serialNumber, status);
-        System.out.println("Machine added successfully!");
+        System.out.println("Machine registered successfully.");
     }
-    
 
-    // Add a new rental
-    private void addRental() {
-        System.out.println("Enter client ID: ");
+    private static void registerRental(RentalController rentalController, Scanner scanner) {
+        System.out.print("Enter client ID: ");
         int clientId = scanner.nextInt();
-        System.out.println("Enter machine ID: ");
+        System.out.print("Enter machine ID: ");
         int machineId = scanner.nextInt();
-        System.out.println("Enter start date (YYYY-MM-DD): ");
-        String startDateStr = scanner.next();
-        Date startDate = Date.valueOf(startDateStr);
-        System.out.println("Enter end date (YYYY-MM-DD): ");
-        String endDateStr = scanner.next();
-        Date endDate = Date.valueOf(endDateStr);
-    
-        rentalController.addRental(clientId, machineId, startDate, endDate);
-        System.out.println("Rental added successfully!");
-    }
-    
+        System.out.print("Enter start date (yyyy-mm-dd): ");
+        String startDateInput = scanner.next();
+        System.out.print("Enter end date (yyyy-mm-dd): ");
+        String endDateInput = scanner.next();
 
-    // View all rentals
-    private void viewRentals() {
-        System.out.println("View rentals (1: Active, 2: All): ");
-        int viewOption = scanner.nextInt();
-        boolean includeInactive = (viewOption == 2);
-        rentalController.getRentals(includeInactive).forEach(System.out::println);
+        Date startDate = Date.valueOf(startDateInput);
+        Date endDate = Date.valueOf(endDateInput);
+
+        rentalController.addRental(clientId, machineId, startDate, endDate);
+        System.out.println("Rental registered successfully.");
+    }
+
+    private static void handlePaginatedViewClients(ClientController clientController, Scanner scanner) {
+        int page = 1;
+        List<Client> clients;
+
+        do {
+            clients = clientController.getAllClients();
+            displayClients(clients, page);
+
+            System.out.print("Enter 'n' for next page, 'p' for previous page, or 'q' to quit: ");
+            String input = scanner.next();
+
+            if (input.equals("n")) {
+                page++;
+            } else if (input.equals("p") && page > 1) {
+                page--;
+            } else if (input.equals("q")) {
+                break;
+            } else {
+                System.out.println("Invalid input.");
+            }
+        } while (!clients.isEmpty());
+    }
+
+    private static void handlePaginatedViewRentals(RentalController rentalController, Scanner scanner) {
+        int page = 1;
+        boolean includeInactive = false;
+        List<Rental> rentals;
+
+        do {
+            rentals = rentalController.getRentals(includeInactive);
+            displayRentals(rentals, page);
+
+            System.out.print("Enter 'n' for next page, 'p' for previous page, 'q' to quit, or 'i' to toggle include inactive: ");
+            String input = scanner.next();
+
+            if (input.equals("n")) {
+                page++;
+            } else if (input.equals("p") && page > 1) {
+                page--;
+            } else if (input.equals("i")) {
+                includeInactive = !includeInactive;
+            } else if (input.equals("q")) {
+                break;
+            } else {
+                System.out.println("Invalid input.");
+            }
+        } while (!rentals.isEmpty());
+    }
+
+    private static void handlePaginatedViewMachines(MachineController machineController, Scanner scanner) {
+        int page = 1;
+        List<Machine> machines;
+
+        do {
+            machines = machineController.getAllMachines(page, PAGE_SIZE);
+            displayMachines(machines, page);
+
+            System.out.print("Enter 'n' for next page, 'p' for previous page, or 'q' to quit: ");
+            String input = scanner.next();
+
+            if (input.equals("n")) {
+                page++;
+            } else if (input.equals("p") && page > 1) {
+                page--;
+            } else if (input.equals("q")) {
+                break;
+            } else {
+                System.out.println("Invalid input.");
+            }
+        } while (!machines.isEmpty());
+    }
+
+    private static void deactivateRental(RentalController rentalController, Scanner scanner) {
+        System.out.print("Enter rental ID: ");
+        int rentalId = scanner.nextInt();
+        System.out.print("Enter machine ID: ");
+        int machineId = scanner.nextInt();
+
+        rentalController.deactivateRental(rentalId, machineId);
+        System.out.println("Rental deactivated successfully.");
+    }
+
+    private static void displayClients(List<Client> clients, int page) {
+        System.out.println("Clients - Page " + page);
+        clients.forEach(client -> System.out.println(client.toString()));
+    }
+
+    private static void displayRentals(List<Rental> rentals, int page) {
+        System.out.println("Rentals - Page " + page);
+        rentals.forEach(rental -> System.out.println(rental.toString()));
+    }
+
+    private static void displayMachines(List<Machine> machines, int page) {
+        System.out.println("Machines - Page " + page);
+        machines.forEach(machine -> System.out.println(machine.toString()));
     }
 }
