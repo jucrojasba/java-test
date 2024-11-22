@@ -1,4 +1,4 @@
-package src.main.com.printer.persistence.DAO;
+package src.main.java.com.printer.persistence.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import src.main.com.printer.entities.Client;
-import src.main.com.printer.persistence.db.DbContext;
+import src.main.java.com.printer.models.Client;
+import src.main.java.com.printer.persistence.db.DbContext;
 
 public class ClientDAO {
     private String table = "clients";

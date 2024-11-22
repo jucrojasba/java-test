@@ -1,4 +1,4 @@
-package src.main.com.printer.persistence.DAO;
+package src.main.java.com.printer.persistence.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import src.main.com.printer.entities.Rental;
-import src.main.com.printer.persistence.db.DbContext;
+import src.main.java.com.printer.models.Rental;
+import src.main.java.com.printer.persistence.db.DbContext;
 
 public class RentalDAO {
     private String table = "rentals";

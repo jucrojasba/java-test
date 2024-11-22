@@ -1,6 +1,6 @@
 package com.printer.controllers;
 
-import com.printer.entities.Rental;
+import com.printer.models.Rental;
 import com.printer.persistence.DAO.RentalDAO;
 
 import java.sql.Date;

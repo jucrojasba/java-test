@@ -1,6 +1,6 @@
 package com.printer.controllers;
 
-import com.printer.entities.Client;
+import com.printer.models.Client;
 import com.printer.persistence.DAO.ClientDAO;
 
 import java.util.List;
