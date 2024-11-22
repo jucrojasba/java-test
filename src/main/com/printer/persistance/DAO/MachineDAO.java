@@ -12,7 +12,6 @@ import src.main.com.printer.persistence.db.DbContext;
 public class MachineDAO {
     private String table = "machines";
 
-    // Register new machine
     public void addMachine(Machine machine) {
         String SQL = String.format("INSERT INTO %s (model, serial_number, status) VALUES (?, ?, ?);", table);
         try (Connection con = DbContext.getConnection();
@@ -26,7 +25,6 @@ public class MachineDAO {
         }
     }
 
-    // Get machine with pagination
     public List<Machine> getMachines(int page, int pageSize) {
         List<Machine> machines = new ArrayList<>();
         int offset = (page - 1) * pageSize;

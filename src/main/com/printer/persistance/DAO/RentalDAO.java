@@ -12,7 +12,6 @@ import src.main.com.printer.persistence.db.DbContext;
 public class RentalDAO {
     private String table = "rentals";
 
-    // Register new rental
     public void addRental(Rental rental) {
         String SQL = String.format("INSERT INTO %s (client_id, machine_id, start_date, end_date, status) VALUES (?, ?, ?, ?, ?);", table);
         try (Connection con = DbContext.getConnection();
@@ -24,7 +23,6 @@ public class RentalDAO {
             statement.setString(5, "Active");
             statement.executeUpdate();
 
-            // Update Machine Status
             String updateMachineSQL = "UPDATE machines SET status = 'Alquilada' WHERE id = ?;";
             try (PreparedStatement updateStatement = con.prepareStatement(updateMachineSQL)) {
                 updateStatement.setInt(1, rental.getMachineId());
@@ -35,7 +33,6 @@ public class RentalDAO {
         }
     }
 
-    // Inactive machine
     public void deactivateRental(int rentalId, int machineId) {
         String SQL = String.format("UPDATE %s SET status = 'Inactive' WHERE id = ?;", table);
         try (Connection con = DbContext.getConnection();
@@ -43,7 +40,6 @@ public class RentalDAO {
             statement.setInt(1, rentalId);
             statement.executeUpdate();
 
-            // Change machine status
             String updateMachineSQL = "UPDATE machines SET status = 'Disponible' WHERE id = ?;";
             try (PreparedStatement updateStatement = con.prepareStatement(updateMachineSQL)) {
                 updateStatement.setInt(1, machineId);
@@ -54,7 +50,6 @@ public class RentalDAO {
         }
     }
 
-    // Get Rental
     public List<Rental> getRentals(boolean includeInactive) {
         List<Rental> rentals = new ArrayList<>();
         String SQL = includeInactive ? String.format("SELECT * FROM %s;", table)

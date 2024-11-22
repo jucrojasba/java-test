@@ -5,12 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import src.main.com.printer.entities.Client;
 import src.main.com.printer.persistence.db.DbContext;
 
 public class ClientDAO {
     private String table = "clients";
+    private static final Logger logger = Logger.getLogger(ClientDAO.class.getName());
 
     // Register a new client
     public void addClient(Client client) {
@@ -23,7 +26,7 @@ public class ClientDAO {
             statement.setString(4, client.getAddress());
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error adding client to database", e);
         }
     }
 
@@ -36,7 +39,7 @@ public class ClientDAO {
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 Client client = new Client(
-                    resultSet.getInt("id"),
+                    resultSet.getInt("id"), 
                     resultSet.getString("name"),
                     resultSet.getString("email"),
                     resultSet.getString("phone"),
@@ -45,9 +48,8 @@ public class ClientDAO {
                 clients.add(client);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error fetching clients from database", e);
         }
         return clients;
     }
 }
-
