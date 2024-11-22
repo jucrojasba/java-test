@@ -13,10 +13,15 @@ public class RentalController {
         rentalDAO = new RentalDAO();
     }
 
-    // Register a new rental
+    // Register a new rental with availability check
     public void addRental(int clientId, int machineId, Date startDate, Date endDate) {
-        Rental rental = new Rental(clientId, machineId, startDate, endDate, "Active");
-        this.rentalDAO.addRental(rental);
+        if (isMachineAvailable(machineId, startDate, endDate)) {
+            Rental rental = new Rental(clientId, machineId, startDate, endDate, "Active");
+            this.rentalDAO.addRental(rental);
+            System.out.println("Rental registered successfully.");
+        } else {
+            System.out.println("The machine is already rented during the specified period.");
+        }
     }
 
     // Deactivate an existing rental
@@ -27,5 +32,18 @@ public class RentalController {
     // Get all rentals (can include inactive ones)
     public List<Rental> getRentals(boolean includeInactive) {
         return this.rentalDAO.getRentals(includeInactive);
+    }
+
+    // Check if the machine is available for the specified dates
+    public boolean isMachineAvailable(int machineId, Date startDate, Date endDate) {
+        List<Rental> rentals = rentalDAO.getRentals(true); 
+        for (Rental rental : rentals) {
+            if (rental.getMachineId() == machineId && rental.getStatus().equals("Active")) {
+                if ((startDate.before(rental.getEndDate()) && endDate.after(rental.getStartDate()))) {
+                    return false;  
+                }
+            }
+        }
+        return true;  
     }
 }

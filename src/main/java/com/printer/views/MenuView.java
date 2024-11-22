@@ -8,6 +8,7 @@ import com.printer.models.Machine;
 import com.printer.models.Rental;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -106,8 +107,13 @@ public class MenuView {
         Date startDate = Date.valueOf(startDateInput);
         Date endDate = Date.valueOf(endDateInput);
 
-        rentalController.addRental(clientId, machineId, startDate, endDate);
-        System.out.println("Rental registered successfully.");
+        // Verificar la disponibilidad de la máquina antes de registrar la renta
+        if (rentalController.isMachineAvailable(machineId, startDate, endDate)) {
+            rentalController.addRental(clientId, machineId, startDate, endDate);
+            System.out.println("Rental registered successfully.");
+        } else {
+            System.out.println("The machine is already rented during the specified period.");
+        }
     }
 
     private static void handlePaginatedViewClients(ClientController clientController, Scanner scanner) {
@@ -135,29 +141,55 @@ public class MenuView {
 
     private static void handlePaginatedViewRentals(RentalController rentalController, Scanner scanner) {
         int page = 1;
-        boolean includeInactive = false;
+        boolean includeInactive = false; 
+        final int pageSize = 5; 
         List<Rental> rentals;
-
+    
         do {
-            rentals = rentalController.getRentals(includeInactive);
-            displayRentals(rentals, page);
-
-            System.out.print("Enter 'n' for next page, 'p' for previous page, 'q' to quit, or 'i' to toggle include inactive: ");
+            List<Rental> allRentals = rentalController.getRentals(includeInactive);
+            
+            int start = (page - 1) * pageSize;
+            int end = Math.min(start + pageSize, allRentals.size());
+            
+            if (start < allRentals.size()) {
+                rentals = allRentals.subList(start, end);
+            } else {
+                rentals = new ArrayList<>();
+            }
+    
+            System.out.println("\nRentals - Page " + page + (includeInactive ? " (Including Inactive)" : ""));
+            if (rentals.isEmpty()) {
+                System.out.println("No rentals found for the current page.");
+            } else {
+                displayRentals(rentals, page);  
+            }
+    
+            System.out.print("Enter 'n' for next page, 'p' for previous page, 'i' to toggle include inactive, or 'q' to quit: ");
             String input = scanner.next();
-
+    
             if (input.equals("n")) {
-                page++;
-            } else if (input.equals("p") && page > 1) {
-                page--;
+                if (end < allRentals.size()) {
+                    page++;
+                } else {
+                    System.out.println("No more pages available.");
+                }
+            } else if (input.equals("p")) {
+                if (page > 1) {
+                    page--;
+                } else {
+                    System.out.println("You are already on the first page.");
+                }
             } else if (input.equals("i")) {
                 includeInactive = !includeInactive;
+                page = 1; 
+                System.out.println(includeInactive ? "Including inactive rentals." : "Showing only active rentals.");
             } else if (input.equals("q")) {
                 break;
             } else {
-                System.out.println("Invalid input.");
+                System.out.println("Invalid input. Please try again.");
             }
-        } while (!rentals.isEmpty());
-    }
+        } while (true);
+    } 
 
     private static void handlePaginatedViewMachines(MachineController machineController, Scanner scanner) {
         int page = 1;
