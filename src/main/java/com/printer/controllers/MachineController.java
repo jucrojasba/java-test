@@ -18,9 +18,8 @@ public class MachineController {
         this.machineDAO.addMachine(machine);
     }
 
-    // Get all machines
-    public List<Machine> getAllMachines() {
-        return this.machineDAO.getAllMachines();
+    // Get all machines with pagination
+    public List<Machine> getAllMachines(int page, int pageSize) {
+        return this.machineDAO.getMachines(page, pageSize);
     }
 }
-

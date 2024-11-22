@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import src.main.java.com.printer.models.Client;
-import src.main.java.com.printer.persistence.db.DbContext;
+import com.printer.models.Client;
+import com.printer.persistence.db.DbContext;
 
 public class ClientDAO {
     private String table = "clients";

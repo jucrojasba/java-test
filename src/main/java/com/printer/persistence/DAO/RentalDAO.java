@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import src.main.java.com.printer.models.Rental;
-import src.main.java.com.printer.persistence.db.DbContext;
+import com.printer.models.Rental;
+import com.printer.persistence.db.DbContext;
 
 public class RentalDAO {
     private String table = "rentals";

@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import src.main.java.com.printer.entities.Machine;
-import src.main.java.com.printer.persistence.db.DbContext;
+import com.printer.models.Machine;
+import com.printer.persistence.db.DbContext;
 
 public class MachineDAO {
     private String table = "machines";
